@@ -1,21 +1,27 @@
 #!/bin/bash
-logDir=/mnt/c/Users/1779064/.redhat/wildfly-21.0.2.Final/standalone/log/
 execDate=$(date '+%Y-%m-%d')
-csvFile=./userLogin.$execDate.csv
-matches=(
-    "Caused by: java.sql.SQLRecoverableException"
-    "jboss/datasources/jdbc/PU_ORACLE"
-  )
-echo Log directory: $logDir
 
-path=./digest.sh
-if [[ -f "$path" ]]; then
-  source "$path"
+# check if environment variable "LOG_DIR" is set.
+if [ -z "$LOG_DIR" ]; then
+  echo 'Environment variable [LOG_DIR] is not set.'
+  exit -1
+elif [  -z "$LOG_DIR" ] && "${LOG_DIR+xxx}" = "xxx" ]; then
+  echo 'Environment variable [LOG_DIR] is empty.'
+  exit -1
+else
+  echo Using log directory: $LOG_DIR
 fi
 
-createPuOracleCsv $csvFile
+# Load digest shell
+digestPath=./digest.sh
+if [[ -f "$digestPath" ]]; then
+  source "$digestPath"
+fi
 
-files=($logDir*)
+userLoginCsvFile=./userLogin.$execDate.csv
+createPuOracleCsv $userLoginCsvFile
+
+files=($LOG_DIR*)
 for nextLogFile in "${files[@]}"; do
-  matchPuOracle $csvFile $nextLogFile
+  matchPuOracle $userLoginCsvFile $nextLogFile
 done

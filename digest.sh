@@ -21,12 +21,6 @@ matchPuOracle() {
   echo -e '\tTotal matches: '${#matchLineNumbers[@]}
   
   for nextMatchLN in ${matchLineNumbers[@]}; do
-    #local lineText=$(sed $nextMatchLN'!d' $logFile | tr -d '\n' | tr -d '\r')
-    #local lineText=$(sed $nextMatchLN'p' $logFile | tr -d '\n' | tr -d '\r')
-    #local lineText=$(awk 'NR=='$nextMatchLN'{ print; exit }' $logFile | tr -d '\n' | tr -d '\r')
-    #local lineText=$(echo "$allText" | sed $nextMatchLN'p' | tr -d '\n' | tr -d '\r')
-    #local lineText=$(echo "$allText" | awk 'NR=='$nextMatchLN'{ print; exit }' | tr -d '\n' | tr -d '\r')
-    #local lineText=$(echo "$allText" | head -n $nextMatchLN | tr -d '\n' | tr -d '\r')
     local lineText=$(echo "$allText" | sed -n $nextMatchLN'p;' | tr -d '\n' | tr -d '\r')
 
     local logDate=${lineText:0:10}
